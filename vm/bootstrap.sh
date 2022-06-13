@@ -1,7 +1,10 @@
+apt-get update
+
 # instalação do docker
-curl -4fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh
+sudo apt-get install docker.io -y
+sudo groupadd docker
 sudo usermod -aG docker vagrant
+newgrp docker
 
 # instalação docker compose
 sudo curl -4L "https://github.com/docker/compose/releases/download/1.28.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -27,6 +30,11 @@ sudo apt-get install bash-completion
 
 # instala maven
 sudo apt-get -y install maven
+
+sudo apt-get -y install gradle
+
+# clone project 
+git clone -q -b master git@github.com:FelipeFMMobile/tradewallet_ws.git
 
 # instala minikube
 #curl -4LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb

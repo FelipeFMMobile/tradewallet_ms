@@ -1,0 +1,97 @@
+version: '3.4'
+
+services:
+  rabbit-mq:
+    image: rabbitmq:3.8.14-management
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks:
+      - network
+
+  zipkin-server:
+    image: openzipkin/zipkin:2.23.2
+    ports:
+      - 9411:9411
+    restart: always
+    depends_on:
+      - rabbit-mq
+    environment:
+      RABBIT_URI: amqp://guest:guest@rabbit-mq:5672
+    networks:
+      - network
+
+  naming-server:
+    image: fmmobile/naming-server:latest
+    build:
+      context: ./
+      dockerfile: naming-server/Dockerfile
+    ports:
+      - 8761:8761
+    networks:
+      - network
+
+  api-gateway:
+    image: fmmobile/api-gateway:latest
+    build:
+      context: .
+      dockerfile: api-gateway/Dockerfile
+    ports:
+      - 8080:8080
+    depends_on:
+      - naming-server
+      - rabbit-mq
+    environment:
+      SPRING.ZIPKIN.BASEURIO: http://zipkin-server:9411/
+      RABBIT_URI: amqp://guest:guest@rabbit-mq:5672
+      SPRING_RABBITMQ_HOST: rabbit-mq
+      SPRING_ZIPKIN_SENDER_TYPE: rabbit
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+    networks:
+      - network
+
+  # cambio-service:
+  #   image: fmmobile/cambio:latest
+  #   restart: always
+  #   build:
+  #     context: .
+  #     dockerfile: cambio/Dockerfile
+  #   ports:
+  #     - 8000:8000
+  #   depends_on:
+  #     - naming-server
+  #     - rabbit-mq
+  #   environment:
+  #     TZ: America/Sao_Paulo
+  #     SPRING.ZIPKIN.BASEURIO: http://zipkin-server:9411/
+  #     RABBIT_URI: amqp://guest:guest@rabbit-mq:5672
+  #     SPRING_RABBITMQ_HOST: rabbit-mq
+  #     SPRING_ZIPKIN_SENDER_TYPE: rabbit
+  #     EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+  #   networks:
+  #     - network
+
+  # book-service:
+  #   image: fmmobile/book-service:latest
+  #   build:
+  #     context: .
+  #     dockerfile: book/Dockerfile
+  #   restart: always
+  #   ports:
+  #     - 8100:8100
+  #   depends_on:
+  #     - naming-server
+  #     - rabbit-mq
+  #   environment:
+  #     TZ: America/Sao_Paulo
+  #     SPRING.ZIPKIN.BASEURIO: http://zipkin-server:9411/
+  #     RABBIT_URI: amqp://guest:guest@rabbit-mq:5672
+  #     SPRING_RABBITMQ_HOST: rabbit-mq
+  #     SPRING_ZIPKIN_SENDER_TYPE: rabbit
+  #     EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+  #   networks:
+  #     - network
+
+networks:
+  network:
+    driver: bridge
