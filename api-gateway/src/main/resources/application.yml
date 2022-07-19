@@ -14,14 +14,18 @@ spring:
       discovery:
         locator:
           enabled: true
-          #lower-case-service-id: true
+          lower-case-service-id: true
       routes:
+        - id: stock-extraction
+          uri: lb://stock-extraction
+          predicates:
+            - Path=/stock-extraction/**
         - id: openapi
           uri: lb://api-gateway
           predicates:
-          - Path=/v3/api-docs/**
+            - Path=/v3/api-docs/**
           filters:
-          - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
+            - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
 eureka:
   client:
     serviceUrl:

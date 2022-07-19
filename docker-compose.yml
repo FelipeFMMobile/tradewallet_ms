@@ -71,7 +71,29 @@ services:
       SPRING_PROFILES_ACTIVE: dev
     networks:
       - network
-  
+
+  stock-extraction:
+    image: fmmobile/stock-extraction:latest
+    build:
+      context: ./
+      dockerfile: stock_extraction/Dockerfile
+    ports:
+      - 8100:8100
+    depends_on:
+    - naming-server
+    - rabbit-mq
+    environment:
+      TZ: America/Sao_Paulo
+      SPRING.ZIPKIN.BASEURIO: http://zipkin-server:9411/
+      RABBIT_URI: amqp://guest:guest@rabbit-mq:5672
+      SPRING_RABBITMQ_HOST: rabbit-mq
+      SPRING_ZIPKIN_SENDER_TYPE: rabbit
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8888/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://naming-server:8761/eureka
+      SPRING_PROFILES_ACTIVE: dev
+    networks:
+      - network
+
 networks:
   network:
     driver: bridge

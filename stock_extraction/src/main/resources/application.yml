@@ -1,0 +1,32 @@
+server:
+  port: 8100
+spring:
+  application:
+    name: stock-extraction
+  config:
+    import: optional:configserver:http://localhost:8888
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+resilience4j:
+  ratelimiter:
+    instances:
+      default:
+        limit-for-period: 2
+        limit-refresh-period: 5s
+sleuth:
+  sampler:
+    probability: 0.5
+springdoc:
+  show-actuator: true
+  api-docs:
+    path: stock-extraction/v3/api-docs
+stock-tags:
+  name_tag: "zzDege"
+  symbol_tag: "PdOqHc"
+  price_tag: "YMlKec fxKbKc"
+  date_tag: "ygUjEc"
+  open_tag: "P6K39c"
+
+
