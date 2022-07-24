@@ -1,6 +1,6 @@
 package com.fmmobile.tradewallet.stock.controller
 
-import com.fmmobile.tradewallet.stock.model.Stock
+import com.fmmobile.tradewallet.stock.data.vo.v1.StockVO
 import com.fmmobile.tradewallet.stock.services.StockService
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,24 +18,24 @@ class StockController {
     lateinit var service: StockService
 
     @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun findAll(): List<Stock> {
+    fun findAll(): List<StockVO> {
         return service.findAll()
     }
 
     @GetMapping(value = ["/{id}"], produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun findById(@PathVariable(value = "id") id: Long): Stock {
+    fun findById(@PathVariable(value = "id") id: Long): StockVO {
         return service.findById(id)
     }
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE],
         produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun create(@RequestBody stock: Stock): Stock {
+    fun create(@RequestBody stock: StockVO): StockVO {
         return service.create(stock)
     }
 
     @PutMapping(consumes = [MediaType.APPLICATION_JSON_VALUE],
         produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun update(@RequestBody stock: Stock): Stock {
+    fun update(@RequestBody stock: StockVO): StockVO {
         return service.update(stock)
     }
 

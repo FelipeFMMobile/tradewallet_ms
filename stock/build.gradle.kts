@@ -41,8 +41,10 @@ dependencies {
 	implementation("org.springframework.cloud:spring-cloud-sleuth-zipkin")
 	implementation("org.springframework.amqp:spring-rabbit")
 	// mysql
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa:2.7.0")
 	implementation("mysql:mysql-connector-java")
+	// dozer / flyway
+	implementation("com.github.dozermapper:dozer-core:6.5.2")
 }
 
 dependencyManagement {

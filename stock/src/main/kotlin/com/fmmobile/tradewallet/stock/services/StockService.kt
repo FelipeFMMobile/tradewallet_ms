@@ -1,6 +1,9 @@
 package com.fmmobile.tradewallet.stock.services
 
+import com.fmmobile.tradewallet.stock.data.vo.v1.StockVO
 import com.fmmobile.tradewallet.stock.exception.ResourceNotFoundException
+import com.fmmobile.tradewallet.stock.mapper.DozerMapper
+import com.fmmobile.tradewallet.stock.mapper.DozerMapper.Companion.parseListObject
 import com.fmmobile.tradewallet.stock.model.Stock
 import com.fmmobile.tradewallet.stock.repositories.StockRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,23 +17,25 @@ class StockService {
     @Autowired
     lateinit var repository: StockRepository
 
-    fun findAll(): List<Stock> {
-        logger.info("Finding all stocks!")
-        return repository.findAll()
+    fun findAll(): List<StockVO> {
+        return parseListObject(repository.findAll() as List<Stock>, StockVO::class.java)
     }
 
-    fun findById(id: Long): Stock {
+    fun findById(id: Long): StockVO {
         logger.info("Finding one stock!")
-        return repository.findById(id)
+        val entity = repository.findById(id)
             .orElseThrow { ResourceNotFoundException("No records found for this ID!") }
+        return DozerMapper.parseObject(entity, StockVO::class.java)
     }
 
-    fun create(stock: Stock): Stock {
+    fun create(stock: StockVO): StockVO {
         logger.info("Creating stock!")
-        return repository.save(stock)
+        val entity = DozerMapper.parseObject(stock, Stock::class.java)
+        val saved = repository.save(entity)
+        return DozerMapper.parseObject(saved, StockVO::class.java)
     }
 
-    fun update(stock: Stock): Stock {
+    fun update(stock: StockVO): StockVO {
         logger.info("Updating stock")
         val entity: Stock = repository.findById(stock.id)
             .orElseThrow { ResourceNotFoundException("No records found for this ID!") }
@@ -44,7 +49,7 @@ class StockService {
         entity.open = stock.open
         entity.variantion = stock.variantion
         entity.volum = stock.volum
-        return repository.save(stock)
+        return DozerMapper.parseObject(entity, StockVO::class.java)
     }
 
     fun delete(id: Long) {
