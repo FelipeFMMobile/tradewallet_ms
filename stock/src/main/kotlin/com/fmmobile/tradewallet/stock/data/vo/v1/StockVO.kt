@@ -14,6 +14,7 @@ class StockVO {
     var price: Double = 0.0
     var variantion: Double = 0.0
     var last_price: Double = 0.0 // price last closed
+    var semaphore: Boolean = false // price last closed
 
     init { }
 }

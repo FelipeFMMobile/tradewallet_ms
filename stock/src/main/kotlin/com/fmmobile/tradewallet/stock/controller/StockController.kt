@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*
 
 @Tag(name = "Stock endpoint")
 @RestController
-@RequestMapping("stock")
+@RequestMapping("stock/v1")
 class StockController {
 
     @Autowired
@@ -22,9 +22,9 @@ class StockController {
         return service.findAll()
     }
 
-    @GetMapping(value = ["/{id}"], produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun findById(@PathVariable(value = "id") id: Long): StockVO {
-        return service.findById(id)
+    @GetMapping(value = ["/{symbol}"], produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun findById(@PathVariable(value = "symbol") symbol: String): StockVO {
+        return service.findBySymbol(symbol)
     }
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE],
@@ -39,10 +39,26 @@ class StockController {
         return service.update(stock)
     }
 
-
     @DeleteMapping(value = ["/{id}"])
     fun delete(@PathVariable(value = "id") id: Long): ResponseEntity<*>? {
         service.delete(id)
         return ResponseEntity.noContent().build<Any>()
+    }
+
+    @GetMapping("status/{status}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun status(@PathVariable(value = "status") status: Boolean): List<StockVO> {
+        return service.findBySemaphore(status)
+    }
+
+    @PostMapping("resetstatus")
+    fun resetStatus(): ResponseEntity<*>? {
+        service.resetSemaphore()
+        return ResponseEntity.notFound().build<Any>()
+    }
+
+    @PostMapping("activestatus")
+    fun activeStatus(): ResponseEntity<*>? {
+        service.resetSemaphore()
+        return ResponseEntity.notFound().build<Any>()
     }
 }

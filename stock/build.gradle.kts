@@ -43,6 +43,8 @@ dependencies {
 	// mysql
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa:2.7.0")
 	implementation("mysql:mysql-connector-java")
+	implementation("org.flywaydb:flyway-core")
+	implementation("org.flywaydb:flyway-mysql")
 	// dozer / flyway
 	implementation("com.github.dozermapper:dozer-core:6.5.2")
 }

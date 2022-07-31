@@ -30,5 +30,7 @@ data class Stock (
     @Column
     var variantion: Double,
     @Column
-    var last_price: Double // price last closed
+    var last_price: Double, // price last closed
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    var semaphore: Boolean = false// price last closed
 )

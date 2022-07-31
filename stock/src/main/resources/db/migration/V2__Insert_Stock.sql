@@ -1,0 +1,1 @@
+INSERT INTO `stock` VALUES (1,'CMIG4','Energy of Minas Gerais Co',15.98,10.65,10.76,10.44,10.65,10.65,'2022-07-22 23:15:25.000000',2,'9.94M',0);

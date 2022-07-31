@@ -28,6 +28,20 @@ class StockService {
         return DozerMapper.parseObject(entity, StockVO::class.java)
     }
 
+    fun findBySymbol(symbol: String): StockVO {
+        logger.info("Finding one stock!")
+        val entity = repository.findBySymbol(symbol)
+            .orElseThrow { ResourceNotFoundException("No records found for this ID!") }
+        return DozerMapper.parseObject(entity.first(), StockVO::class.java)
+    }
+
+    fun findBySemaphore(semaphore: Boolean): List<StockVO> {
+        logger.info("Finding one stock!")
+        val entity = repository.findBySemaphore(semaphore)
+            .orElseThrow { ResourceNotFoundException("No records found for this ID!") }
+        return DozerMapper.parseListObject(entity, StockVO::class.java)
+    }
+
     fun create(stock: StockVO): StockVO {
         logger.info("Creating stock!")
         val entity = DozerMapper.parseObject(stock, Stock::class.java)
@@ -49,6 +63,7 @@ class StockService {
         entity.open = stock.open
         entity.variantion = stock.variantion
         entity.volum = stock.volum
+        entity.semaphore = stock.semaphore
         return DozerMapper.parseObject(entity, StockVO::class.java)
     }
 
@@ -57,5 +72,15 @@ class StockService {
         val entity: Stock = repository.findById(id)
             .orElseThrow { ResourceNotFoundException("No records found for this ID!") }
         repository.delete(entity)
+    }
+
+    fun resetSemaphore() : Int {
+        logger.info("Reseting Semaphore!")
+        return repository.updateSemaphoreStatus(from = true, to = false)
+    }
+
+    fun activeSemaphore() : Int {
+        logger.info("Activating Semaphore!")
+        return repository.updateSemaphoreStatus(from = false, to = true)
     }
 }
